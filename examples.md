@@ -1,6 +1,6 @@
 # Examples
 
-These are fictional scenarios and authored illustrations, not results from independent model tests.
+The Everyday and Work scenarios are fictional. The Research example uses reported results from a cited flow-prediction project. All responses are authored illustrations, not results from independent skill tests.
 
 ## Everyday: tidying a desk
 
@@ -38,27 +38,34 @@ The promotion is planned for Friday. It covers the store's own products; third-p
 
 This version keeps the known responsibilities, conditions, and handoff details. The source gives no discount threshold or exact launch time, so neither is invented.
 
-## Research: what a finding means
+## Research source notes
 
-Source material:
+The [Research level 1 and 5 example](README.md#see-the-difference-research-levels-1-and-5) uses one question about physics-informed airfoil flow prediction. The project is by Zhibo Dai and Salavat Ishbulatov and builds on the Deep-Flow-Prediction framework from Thuerey and colleagues.
 
-> A study examines urban tree canopy and heat exposure. Observations from neighborhoods in City A over one summer show that neighborhoods with more tree canopy tend to have lower land surface temperatures. The analysis controls for building density but has no near-surface air temperature or resident activity data. It cannot establish that adding greenery causes cooling, or directly measure residents' actual heat exposure.
+### Reported evidence
 
-Request: “What is the scientific significance of this result? What can it answer, and what should be investigated next?”
+The [project README](https://github.com/ZhiboDai804/Physics-Informed-Deep-Flow-Prediction#results) and [final report, page 5](https://github.com/ZhiboDai804/Physics-Informed-Deep-Flow-Prediction/blob/main/reports/CS229_Final_Report.pdf) report combined relative errors of 2.74% for the baseline and 2.61%, 2.65%, 2.86%, and 3.51% for continuity weights 0.02, 0.1, 0.5, and 1.0, respectively.
 
-**Research level 1**
+The decrease from 2.74% to 2.61% is 0.13 percentage points, approximately 4.7% of the baseline error. It should not be described as a 0.13% relative improvement or as proof of statistical significance.
 
-The observations in City A link greater tree canopy to lower land surface temperatures, but do not establish that adding greenery reduces residents' actual heat exposure. The question to pursue is when lower surface temperatures mean lower exposure for people.
+The report describes 6,000 training samples, 400 validation samples, and 90 test samples on previously unseen airfoil shapes. Its explanation for deterioration at high weights is a mismatch between the continuity constraint and fields resampled from a body-fitted mesh onto a 128 × 128 Cartesian grid. The example treats this as the authors' proposed explanation, not as a mechanism independently demonstrated here.
 
-**Research level 5**
+### Reproduction details to reconcile
 
-This finding offers a clue to why surface temperatures differ between neighborhoods. It does not yet tell us whether residents experience less heat. The next question is under what spatial and behavioral conditions cooler surfaces translate into lower human exposure.
+The public report and released implementation differ in two relevant places:
 
-The evidence comes from neighborhood observations in City A during one summer. After accounting for building density, the analysis finds that greater tree canopy is associated with lower surface temperatures. It supports that association, but cannot establish a causal effect of adding greenery or a reduction in residents' exposure. Controlling for one factor does not rule out other explanations.
+- The report's method section, page 3, writes the continuity term as an L1 norm of divergence. The [released loss implementation](https://github.com/ZhiboDai804/Physics-Informed-Deep-Flow-Prediction/blob/main/src/deep_flow/losses.py) squares the discrete divergence, masks the airfoil interior, and takes the mean over the grid.
+- The report describes approximately 500,000 iterations per experiment. The released [baseline configuration](https://github.com/ZhiboDai804/Physics-Informed-Deep-Flow-Prediction/blob/main/configs/baseline.yaml) specifies 300,000, while the [λ = 0.02 configuration](https://github.com/ZhiboDai804/Physics-Informed-Deep-Flow-Prediction/blob/main/configs/physics_lambda_0.02.yaml) specifies 500,000.
 
-Two questions need different evidence. To assess whether surface temperature reflects human exposure, a study would need to connect near-surface air temperatures with where people spend time and when. To estimate the effect of adding greenery, it would need a design that separates that change from other changes occurring at the same time, with its assumptions made explicit. The first question concerns whether the indicator represents people's experience; the second concerns whether an observed change can be attributed to greenery.
+These differences do not establish that the reported table is wrong. They mean that the exact settings behind it need clarification before the cleaned repository can be treated as a matched reproduction. The example therefore refers to reported experiments and avoids claiming that the continuity term alone caused the observed gain.
 
-Studies in other cities and seasons could help establish how widely the relationship applies. These are proposed next steps, not analyses or conclusions already completed by the current study.
+The [normalization code](https://github.com/ZhiboDai804/Physics-Informed-Deep-Flow-Prediction/blob/main/src/deep_flow/dataset.py) scales the two velocity channels differently. The loss implementation restores their relative scales with factors 2.04 and 2.37 before combining derivatives. Any comparison of continuity residuals should use consistent scaling, masking, and differentiation conventions.
+
+### What the example does and does not show
+
+The numerical results belong to the cited project. The two responses and proposed follow-up studies were written for this skill's documentation. No training, checkpoint evaluation, or independent reproduction of the project was performed. No code, data, or figures from that project are bundled in this skill.
+
+Level 1 states the finding and its main limit. Level 5 frames the scientific question, examines the proposed mechanism, and suggests tests that could distinguish explanations. The homepage shows these two endpoints to keep the comparison short; the skill still supports every Research level from 1 to 5.
 
 ## Choose by purpose, across professions
 
