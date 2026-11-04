@@ -1,7 +1,8 @@
 # AI EasyRead Modes
 
-Make answers easier to read, with the depth suited to the task. Choose a mode and a level; all three modes default to level 2.
+As AI takes on more complex tasks, its answers can become longer, denser, and harder to follow. Readers may spend considerable time finding the main point, working through unfamiliar terms, and deciding which details matter. Clearer wording and a suitable level of detail can reduce this reading effort.
 
+AI EasyRead Modes helps make answers easier to read while preserving key details and uncertainty. Choose a mode and a level to suit the task; all three modes default to level 2.
 | Mode | Levels | Purpose |
 | --- | --- | --- |
 | Everyday | 1–3 | Personal choices, household tasks, and practical explanations. |
