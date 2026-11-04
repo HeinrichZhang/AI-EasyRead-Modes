@@ -2,7 +2,7 @@
 
 As AI takes on more complex tasks, its answers can become longer, denser, and harder to follow. Readers may spend considerable time finding the main point, working through unfamiliar terms, and deciding which details matter. Clearer wording and a suitable level of detail can reduce this reading effort.
 
-AI EasyRead Modes is a lightweight, instruction-only skill for AI clients that support [Agent Skills](https://agentskills.io/specification). It guides the model to write readable answers at a depth suited to the task, while preserving key details and uncertainty. It works with your client's model and has no runtime dependencies of its own.
+AI EasyRead Modes is a lightweight, instruction-only skill for AI clients that support [Agent Skills](https://agentskills.io/specification). It adjusts how much detail an answer contains while preserving the task, the main point, and essential qualifications. Higher levels explain the answer more fully and can add relevant insights after the requested work is complete. It works with your client's model and has no runtime dependencies of its own.
 
 ## Modes
 
@@ -16,30 +16,28 @@ All modes default to **level 2**. Work covers professions including e-commerce, 
 
 ## See the difference: Research levels 1 and 5
 
-**One question:** When do physical constraints improve a learned flow model, and what can these results establish?
+**Same task:** Explain why a modest continuity penalty might improve flow prediction, while a strong penalty makes it worse in the reported experiments.
 
-In [Physics-Informed Deep Flow Prediction](https://github.com/ZhiboDai804/Physics-Informed-Deep-Flow-Prediction), a U-Net learns to predict airfoil pressure and velocity from simulation data resampled onto a `128 × 128` grid. A continuity penalty encourages mass conservation. The reported combined error on normalized fields is **2.74%** without this penalty, **2.61%** at penalty weight **λ = 0.02**, and **3.51%** at **λ = 1.0**.
+The example uses [Physics-Informed Deep Flow Prediction](https://github.com/ZhiboDai804/Physics-Informed-Deep-Flow-Prediction), which predicts airfoil pressure and velocity using simulation data resampled onto a `128 × 128` grid. Both versions explain the same reported result and the authors' proposed reason for it. These responses are authored illustrations, not an evaluation of this skill.
 
-The results come from the cited project. The two answers below are authored illustrations, not an independent evaluation of this skill.
+### Research level 1 — Essential explanation
 
-### Research level 1 — Main finding
-
-The reported experiments favor a modest continuity penalty: predictions agree slightly better with the reference flow fields, while a strong penalty makes agreement worse. The benefit of adding physics appears conditional; this error comparison alone does not establish physical reliability.
+The model's reported error was lower with a modest mass-conservation penalty and higher with a strong one. The authors suggest that resampling leaves the reference data imperfectly consistent with the constraint, so enforcing it too strongly can conflict with fitting the data. This explains the pattern plausibly, but the cause has not been established.
 
 <details>
-<summary><strong>Research level 5 — Scientific meaning, competing explanations, and next tests</strong></summary>
+<summary><strong>Research level 5 — Complete explanation of the same result</strong></summary>
 
-The deeper question is when a conservation law remains a useful learning constraint after a simulation has been converted into training data. For an aerodynamic surrogate, agreement with reference fields and physical credibility both matter. A model could improve one without improving the other.
+The reported comparison suggests that a modest continuity penalty can be useful, while a strong penalty can harm agreement with the reference flow fields. The combined relative error on normalized fields falls from 2.74% for the baseline to 2.61% at penalty weight λ = 0.02. This is a reduction of 0.13 percentage points, about 4.7% relative to the baseline. At λ = 1.0, the error rises to 3.51%. Increasing the weight therefore did not consistently improve prediction in these experiments.
 
-The reported reduction from 2.74% to 2.61% identifies a promising regime of moderate regularization, but does not establish why it works. The authors suggest that resampling leaves the reference fields inconsistent with discrete continuity, so strong enforcement can conflict with fitting those fields. Loss imbalance or optimization effects could also contribute. If target inconsistency drives the deterioration, reducing it should change the tradeoff between data fit and mass conservation.
+The model is a supervised U-Net trained on pressure and velocity fields from two-dimensional Reynolds-averaged Navier–Stokes simulations. Its data loss rewards agreement with those reference fields. The added continuity penalty discourages velocity divergence, which measures a local violation of mass conservation in incompressible flow. The weight λ sets how strongly that penalty contributes alongside the data loss.
 
-A follow-up study should first measure the target fields' continuity residual using the same scaling, mask, and discrete operator used in training. It could then compare grid resolutions or resampling methods while controlling training budget, loss definition, model capacity, and random seeds. Changes in the error–residual relationship would help distinguish target inconsistency from a general optimization problem. A resolution change alone would not isolate the cause, because it can also change model and training requirements.
+The authors' explanation concerns the numerical representation of the reference data. The original solutions are transferred from a body-fitted mesh to a `128 × 128` Cartesian grid. After this resampling, the fields may not exactly satisfy the discrete continuity constraint used in training. Under this explanation, a modest penalty provides a useful guide while still allowing the model to fit the data. A large penalty can instead prioritize satisfying the constraint even where it conflicts with the resampled targets, increasing prediction error.
 
-Evaluation should report pressure error, velocity error, and mass-balance residuals separately, with uncertainty across runs. Additional flow regimes beyond the published test set would test how far any benefit extends. These checks would clarify whether the constraint improves transferable flow prediction or mainly changes the fit to one numerical representation. They are proposed tests, not results already established by the project.
+This is a plausible account of the observed pattern, not a demonstrated causal mechanism. The error comparison alone cannot establish that resampling caused the deterioration. A useful implication is that a valid physical law and its numerical enforcement are separate issues: stronger enforcement of an approximate constraint need not produce a better fit to processed data. The result supports a conditional benefit in this setup, not a general claim that more or less physical regularization is always better.
 
 </details>
 
-Both answers use the same material. Level 1 states the finding and its main limit; level 5 examines what could explain it and what evidence would change the conclusion. See [source notes](examples.md#research-source-notes) for attribution and reproduction details.
+Both versions give the same finding, proposed explanation, and uncertainty. Level 5 adds the numerical evidence, method details, and reasoning behind that answer. See [source notes](examples.md#research-source-notes) for the shared material and attribution.
 
 ## Install and try
 
@@ -66,17 +64,19 @@ For the last two examples, include the notes or finding you want to discuss.
 
 See the [Codex](https://learn.chatgpt.com/docs/build-skills) and [Claude Code](https://code.claude.com/docs/en/skills) installation docs. Other clients may use different installation methods.
 
-## Depth levels
+## Detail levels
 
-| Level | Everyday | Work | Research |
-| --- | --- | --- | --- |
-| 1 | Direct answer or action. | Decision, status, and immediate action. | Main judgment, scientific meaning, and key limit. |
-| 2 | Brief explanation and useful steps. | Key reasons, actions, and cautions. | Main evidence and why it matters. |
-| 3 | Enough explanation, options, and steps to handle the situation. | A usable plan, responsibilities, and dependencies. | Connect the question, approach, evidence, and conclusion. |
-| 4 | — | Compare options, tradeoffs, exceptions, and execution risks. | Examine competing explanations, assumptions, and methodological limits. |
-| 5 | — | Complete information for the requested decision, execution, or handoff. | Discuss theoretical contribution, evidence, alternative explanations, robustness, and inference limits in depth. |
+Changing the level keeps the task and core answer intact. It changes how much explanation and supporting detail the reader sees. Everyday uses levels 1–3; Work and Research use levels 1–5.
 
-Levels control depth within each mode, not word counts or the difficulty of the language. Every level should remain readable and preserve important conditions and uncertainty. A lower level must still complete all requested deliverables.
+| Level | What changes |
+| --- | --- |
+| 1 · Essential | The shortest readable answer that keeps the core point, essential reasoning, and necessary qualifications. |
+| 2 · Brief | The same answer with a short explanation of its main reasons or steps. |
+| 3 · Standard | Enough context and supporting detail to understand the same answer. |
+| 4 · Detailed | Fuller reasoning, evidence, assumptions, and limits relevant to the task. |
+| 5 · Complete | A complete explanation within the requested scope, suitable for careful review or reuse. Relevant further insights may follow the core answer. |
+
+Every level must complete the requested work. Level 5 can think further, but should first answer the original question; an explanation should not turn into a different assignment. For rewrites, expansion stays within the supplied material unless analysis is also requested. Levels are not word counts, and completeness does not require harder language or repetition.
 
 ## Defaults and language
 
@@ -87,7 +87,7 @@ Levels control depth within each mode, not word counts or the difficulty of the 
 
 ## Limits and validation
 
-Research mode guides the depth of a scientific discussion; it does not by itself verify facts or citations. Results depend on the model, the supplied material, and the client's handling of skills.
+Research mode adapts the explanation of a scientific task; it does not by itself verify facts or citations. Results depend on the model, the supplied material, and the client's handling of skills.
 
 The files and packaging have been checked, and the instructions and examples have been self-reviewed. The example responses are authored illustrations, not benchmark results for this skill. Cited research results belong to their source projects. Automatic activation and conversation defaults have not been tested in Codex or Claude Code. No measured improvement in reading speed or comprehension is claimed.
 
