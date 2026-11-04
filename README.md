@@ -24,8 +24,10 @@ The example uses [Physics-Informed Deep Flow Prediction](https://github.com/Zhib
 
 The model's reported error was lower with a modest mass-conservation penalty and higher with a strong one. The authors suggest that resampling leaves the reference data imperfectly consistent with the constraint, so enforcing it too strongly can conflict with fitting the data. This explains the pattern plausibly, but the cause has not been established.
 
+### Research level 5 — Complete explanation of the same result
+
 <details>
-<summary><strong>Research level 5 — Complete explanation of the same result</strong></summary>
+<summary>Read the full explanation</summary>
 
 The reported comparison suggests that a modest continuity penalty can be useful, while a strong penalty can harm agreement with the reference flow fields. The combined relative error on normalized fields falls from 2.74% for the baseline to 2.61% at penalty weight λ = 0.02. This is a reduction of 0.13 percentage points, about 4.7% relative to the baseline. At λ = 1.0, the error rises to 3.51%. Increasing the weight therefore did not consistently improve prediction in these experiments.
 
