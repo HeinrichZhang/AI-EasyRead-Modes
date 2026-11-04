@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI EasyRead Modes"
+  short_description: "Clear answers for everyday life, work, and research"
+  default_prompt: "Use $ai-easyread-modes to make this easier to read."
