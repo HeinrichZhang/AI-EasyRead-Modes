@@ -18,7 +18,7 @@ All modes default to **level 2**. Work covers professions including e-commerce, 
 
 **Same task:** Explain why a modest continuity penalty might improve flow prediction, while a strong penalty makes it worse in the reported experiments.
 
-The example uses [Physics-Informed Deep Flow Prediction](https://github.com/ZhiboDai804/Physics-Informed-Deep-Flow-Prediction), which predicts airfoil pressure and velocity using simulation data resampled onto a `128 × 128` grid. Both versions explain the same reported result and the authors' proposed reason for it. These responses are authored illustrations, not an evaluation of this skill.
+The example uses [Physics-Informed Deep Flow Prediction](https://github.com/ZhiboDai804/Physics-Informed-Deep-Flow-Prediction) from Stanford, which predicts airfoil pressure and velocity using simulation data resampled onto a `128 × 128` grid. Both versions explain the same reported result and the authors' proposed reason for it. These responses are authored illustrations, not an evaluation of this skill.
 
 ### Research level 1 — Essential explanation
 
